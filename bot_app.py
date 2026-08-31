@@ -5,6 +5,7 @@ import discord
 from dataclasses import dataclass
 from typing import Optional
 from discord.ext import commands
+from glob import glob
 
 from config import Config
 
@@ -25,11 +26,15 @@ class BotApp(commands.Bot):
 
     async def setup_hook(self):
         #TODO: get from files
-        await self.load_extension('cogs.test')
-        logger.info("Loaded 'cogs.test' extension")
+        cogs = glob(r"cogs\*.py")
+        cogs = [cog.replace("\\", ".").replace(".py", "") for cog in cogs if cog != r"cogs\__init__.py"]
 
-        await self.load_extension('cogs.short_url')
-        logger.info("Loaded 'cogs.short_url' extension")
+        for cog in cogs:
+            try:
+                await self.load_extension(cog)
+                logger.info("Loaded '%s' extension", cog)
+            except Exception as e:
+                logger.error("Failed to load '%s' extension: %s", cog, e)
 
     async def on_ready(self):
         logger.info(f"Logged in as {self.user}")
