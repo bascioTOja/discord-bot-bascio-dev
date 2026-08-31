@@ -2,8 +2,11 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
+from bot_app import BotApp
+
+
 class TestCommands(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: BotApp):
         self.bot = bot
 
     @app_commands.command(name="ping", description="Test command to check if the bot is responsive")

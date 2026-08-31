@@ -1,0 +1,7 @@
+CREATE SEQUENCE IF NOT EXISTS migrations_id_seq START 1;
+
+CREATE TABLE IF NOT EXISTS migrations (
+    id INTEGER PRIMARY KEY DEFAULT nextval('migrations_id_seq'),
+    name VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

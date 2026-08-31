@@ -11,6 +11,7 @@ class Config:
     api_base_url: str
     api_scheme: str
     api_host: str
+    db_path: str
 
 def _parse_int(value: str | None) -> int | None:
     if value is None or value.strip() == "":
@@ -59,4 +60,5 @@ def load_config() -> Config:
         api_base_url=api_base_url,
         api_scheme=api_scheme,
         api_host=api_host,
+        db_path=os.getenv("DB_PATH", "bot_data.db").strip()
     )

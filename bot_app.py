@@ -7,6 +7,7 @@ from typing import Optional
 from discord.ext import commands
 from glob import glob
 
+import db
 from config import Config
 
 logger = logging.getLogger(__name__)
@@ -21,11 +22,11 @@ class BotApp(commands.Bot):
         super().__init__(command_prefix="/", intents=discord.Intents.all())
 
         self.config = config
+        self.db = db.Database(config.db_path)
         self.channels = Channels()
         logger.info("BotApp initialized")
 
     async def setup_hook(self):
-        #TODO: get from files
         cogs = glob(r"cogs\*.py")
         cogs = [cog.replace("\\", ".").replace(".py", "") for cog in cogs if cog != r"cogs\__init__.py"]
 
