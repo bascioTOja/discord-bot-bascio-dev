@@ -14,24 +14,40 @@ class Database:
 
     def register_token(self, user_id: str, username: str, api_token: str) -> str:
         exists = self.conn.execute(
-            "SELECT 1 FROM users WHERE discord_id = ?::BIGINT;",
+            "SELECT 1 FROM users WHERE user_id = ?::BIGINT;",
             (user_id,),
         ).fetchone()
 
         if exists:
             self.conn.execute(
-                "UPDATE users SET global_name = ?, api_token = ?, updated_at = CURRENT_TIMESTAMP WHERE discord_id = ?::BIGINT;",
+                "UPDATE users SET global_name = ?, api_token = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?::BIGINT;",
                 (username, api_token, user_id),
             )
 
             return 'Token updated successfully.'
 
         self.conn.execute(
-            "INSERT INTO users (discord_id, global_name, api_token) VALUES (?::BIGINT, ?, ?);",
+            "INSERT INTO users (user_id, global_name, api_token) VALUES (?::BIGINT, ?, ?);",
             (user_id, username, api_token),
         )
 
         return 'Token registered successfully.'
+
+    def unregister_token(self, user_id: str) -> str:
+        exists = self.conn.execute(
+            "SELECT 1 FROM users WHERE user_id = ?::BIGINT;",
+            (user_id,),
+        ).fetchone()
+
+        if not exists:
+            return 'No token found for this user.'
+
+        self.conn.execute(
+            "DELETE FROM users WHERE user_id = ?::BIGINT;",
+            (user_id,),
+        )
+
+        return 'Token unregistered successfully.'
 
     def close(self):
         self.conn.close()
