@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 class Config:
     discord_token: str
     announce_channel_id: int
-    debug_channel_id: int
     api_base_url: str
     api_scheme: str
     api_host: str
@@ -39,8 +38,6 @@ def load_config() -> Config:
     if not announce_channel_id:
         raise RuntimeError("Missing ANNOUNCE_CHANNEL_ID in .env")
 
-    debug_channel_id = _parse_int(os.getenv("DEBUG_CHANNEL_ID")) or announce_channel_id
-
     api_base_url = os.getenv("API_BASE_URL")
     if api_base_url and api_base_url.strip():
         api_base_url = api_base_url.strip().rstrip("/")
@@ -56,7 +53,6 @@ def load_config() -> Config:
     return Config(
         discord_token=discord_token.strip(),
         announce_channel_id=announce_channel_id,
-        debug_channel_id=debug_channel_id,
         api_base_url=api_base_url,
         api_scheme=api_scheme,
         api_host=api_host,

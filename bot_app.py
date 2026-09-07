@@ -27,6 +27,11 @@ class BotApp(commands.Bot):
         logger.info("BotApp initialized")
 
     async def setup_hook(self):
+        await self.load_cogs()
+        await self.tree.sync()
+        logger.info("Synced application commands (global)")
+
+    async def load_cogs(self) -> None:
         cogs = glob(r"cogs\*.py")
         cogs = [cog.replace("\\", ".").replace(".py", "") for cog in cogs if cog != r"cogs\__init__.py"]
 
@@ -41,11 +46,7 @@ class BotApp(commands.Bot):
         logger.info(f"Logged in as {self.user}")
 
         self.channels.announce = self.get_channel(self.config.announce_channel_id)
-        self.channels.debug = self.get_channel(self.config.debug_channel_id)
         logger.info(
-            "Channels resolved: announce=%s debug=%s",
+            "Channels resolved: announce=%s",
             getattr(self.channels.announce, "id", None),
-            getattr(self.channels.debug, "id", None),
         )
-
-        await self.tree.sync()
