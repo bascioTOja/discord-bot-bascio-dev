@@ -19,14 +19,15 @@ def _get_json(response: Response) -> JsonType:
 async def _post(api_client: ApiClient) -> Response:
     try:
         async with httpx.AsyncClient(timeout=20.0) as client:
-            return await client.post(api_client.url, json=api_client.payload)
+            return await client.post(api_client.url, json=api_client.payload, headers=api_client.headers)
     except httpx.RequestError:
         raise ApiError("Could not reach the API.")
 
 class ApiClient:
-    def __init__(self, url: str, payload: dict[str, object]) -> None:
+    def __init__(self, url: str, payload: dict[str, object], auth_token: str = None) -> None:
         self.url = url
         self.payload = payload
+        self.headers = {"Authorization": f"Bearer {auth_token}"} if auth_token else {}
 
     async def post_json(self, interaction: Interaction, *, expected: Literal["dict", "list"] | None = None, allow_empty: bool = True) -> JsonType:
         await interaction.response.defer(thinking=True)

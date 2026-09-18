@@ -49,6 +49,14 @@ class Database:
 
         return 'Token unregistered successfully.'
 
+    def get_token(self, user_id: str) -> str:
+        result = self.conn.execute(
+            "SELECT api_token FROM users WHERE user_id = ?::BIGINT;",
+            (user_id,),
+        ).fetchone()
+
+        return result[0] if result else None
+
     def close(self):
         self.conn.close()
 

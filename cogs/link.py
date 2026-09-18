@@ -12,6 +12,7 @@ class LinkCommands(commands.Cog):
         self.bot = bot
 
     @app_commands.command(name="link_fix", description="Fix embeds for links")
+    @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
     async def link_fix(self, interaction: discord.Interaction, link: str):
         payload = {
             "text": link
@@ -27,7 +28,7 @@ class LinkCommands(commands.Cog):
             await interaction.followup.send("API returned unexpected data.", ephemeral=True)
             return
 
-        await interaction.followup.send(f"<{data.get('rewritten', 'Sorry, could not rewrite the link.')}>")
+        await interaction.followup.send(data.get('rewritten', 'Sorry, could not rewrite the link.'))
 
 async def setup(bot):
     await bot.add_cog(LinkCommands(bot))
